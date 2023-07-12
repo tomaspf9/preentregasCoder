@@ -14,8 +14,8 @@ app.set("view engine", "handlebars");
 app.set("views", "./src/views");
 app.use(express.static("public"));
 
-const server = app.listen(PORT, () => {
-  console.log(`Server OK en puerto ${PORT}`);
+const server = app.listen(port, () => {
+  console.log(`Server OK en puerto ${port}`);
 });
 
 app.use(express.json());
