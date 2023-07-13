@@ -4,7 +4,7 @@ import ManagerMongoDb from "../dao/ManagerMongoDb.js";
 const router = Router();
 const cartManager = new ManagerMongoDb.CartManager();
 
-router.get("/carts", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const cart = await cartManager.getCart();
     res.send(cart);
@@ -13,7 +13,7 @@ router.get("/carts", async (req, res) => {
   }
 });
 
-router.post("/carts", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const response = await cartManager.createCart([]);
     res.send(response);
@@ -22,35 +22,38 @@ router.post("/carts", async (req, res) => {
   }
 });
 
-router.put("/carts/:id", async (req, res) => {
-  const { id } = req.params;
-  const newProduct = req.body;
-
+router.put("/:cid/products/:pid", async (req, res) => {
+  const { cid } = req.params;
+  const { pid } = req.params;
+  let { quantity } = req.body;
   try {
-    const response = await cartManager.addProductToCart(id, newProduct);
+    const response = await cartManager.addProductToCart(cid, pid, quantity);
     res.send(response);
   } catch (err) {
     res.status(500).send(err.message);
   }
 });
-router.delete("/carts/product/:id", async (req, res) => {
-  const { id } = req.params;
-  const newProduct = req.body;
+router.delete("/:cid/products/:pid", async (req, res) => {
+  const { cid } = req.params;
+  const { pid } = req.params;
 
   try {
-    const response = await cartManager.removeProductFromCart(id, newProduct);
-    res.send(response);
+    const response = await cartManager.removeProductFromCart(cid, pid);
+    res.send({
+      message: "Product deleted successfully",
+      id: pid,
+    });
   } catch (err) {
     res.status(500).send(err.message);
   }
 });
 
-router.delete("/carts/:cid", async (req, res) => {
+router.delete("/:cid", async (req, res) => {
   const { cid } = req.params;
   try {
-    const response = await cartManager.deleteCart(cid);
+    const response = await cartManager.deleteAllProductCart(cid);
     res.send({
-      message: "Eliminado Correctamente",
+      message: "Cart deleted successfully",
       id: cid,
     });
   } catch (err) {
