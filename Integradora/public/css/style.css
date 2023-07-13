@@ -11,6 +11,15 @@
   border-radius: 20px;
 }
 
+#chatContainer button {
+  background-color: rgb(107, 192, 131);
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  width: 100%;
+}
+
 #chatWindow {
   padding: 14px 0;
   margin: 5px;
@@ -45,11 +54,36 @@ input {
 }
 
 button {
-  background: #575ed8;
-  color: #fff;
-  font-size: 18px;
-  border: none;
-  padding: 12px;
-  width: 100%;
   border-radius: 20px;
+}
+
+.tituloHome {
+  background-color: #555;
+  color: #fff;
+  padding: 5px;
+  text-align: center;
+}
+.containerCard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.containerProductos {
+  display: flex;
+}
+.containerForm {
+  width: 80%;
+  margin: 30px;
+}
+.tituloInputs {
+  background-color: #777;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+}
+.containerBtn {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
 }
