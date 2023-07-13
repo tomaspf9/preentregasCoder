@@ -1,12 +1,13 @@
-import express from 'express';
-import handlebars from 'express-handlebars';
-import mongoose from 'mongoose';
-import productRouter from "./routes/product.routes"
-import chatRouter from "./routes/chat.routes"
-import cartRouter from "./routes/cart.routes"
+import express from "express";
+import handlebars from "express-handlebars";
+import mongoose from "mongoose";
+import productRouter from "./routes/product.routes.js"
+import chatRouter from "./routes/chat.routes.js"
+import cartRouter from "./routes/cart.routes.js"
+import viewsRouter from "./routes/views.routes.js"
 
 import __dirname from "./utils.js";
-import { Server } from 'socket.io';
+import { Server } from "socket.io";
 
 const app = express();
 const port = 8080;
