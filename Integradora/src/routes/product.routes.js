@@ -4,16 +4,19 @@ import ManagerMongoDb from "../dao/ManagerMongoDb.js";
 const router = Router();
 const productManger = new ManagerMongoDb.ProductManger();
 
-router.get("/product", async (req, res) => {
+router.get("/", async (req, res) => {
+  const { limit, page, sort, query } = req.query;
+  let queryList = { limit, page, sort, query };
+
   try {
-    const products = await productManger.getProduct();
-    res.send(products);
+    const products = await productManger.getProduct(queryList);
+    res.send({ status: "success", products });
   } catch (err) {
     res.status(500).send(err.message);
   }
 });
 
-router.post("/product", async (req, res) => {
+router.post("/", async (req, res) => {
   const newProduct = {
     ...req.body,
   };
@@ -25,7 +28,7 @@ router.post("/product", async (req, res) => {
   }
 });
 
-router.put("/product/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const product = req.body;
   try {
@@ -36,12 +39,12 @@ router.put("/product/:id", async (req, res) => {
   }
 });
 
-router.delete("/product/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const response = await productManger.deleteProduct(id);
     res.send({
-      message: "Producto Eliminado",
+      message: "Producto eliminado correctamente",
       id: id,
     });
   } catch (err) {
