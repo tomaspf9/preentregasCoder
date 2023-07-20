@@ -96,10 +96,3 @@ io.on("connection", async socket => {
 		console.log(`Client ${socket.id} disconnected`);
 	});
 });
-
-
-
-// Server en 8080
-const httpServer = app.listen(port, () => {
-	console.log(`Server listening on http://localhost:${port}`);
-});
