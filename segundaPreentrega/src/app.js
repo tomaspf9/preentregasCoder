@@ -1,7 +1,7 @@
 // Import express
 
 import express from "express";
-import host = "0.0.0.0";
+const host = "0.0.0.0";
 const app = express();
 const port = 8080;
 
@@ -95,4 +95,5 @@ io.on("connection", async socket => {
 	socket.on("disconnect", () => {
 		console.log(`Client ${socket.id} disconnected`);
 	});
-});
+})})
+
