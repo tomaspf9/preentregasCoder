@@ -15,7 +15,8 @@ products.get("/", async (req, res) => {
 	};
 });
 
-// Endpoint para obtener un producto según ID:
+//producto segun id
+
 products.get("/:id", async (req, res) => {
 	try {
 		const { id } = req.params;
