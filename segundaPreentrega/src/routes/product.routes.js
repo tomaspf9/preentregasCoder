@@ -1,55 +1,120 @@
 import { Router } from "express";
-import ManagerMongoDb from "../dao/ManagerMongoDb.js";
+import { productModel } from "../dao/mongo/models/product.model.js";
 
-const router = Router();
-const productManger = new ManagerMongoDb.ProductManger();
+const products = Router();
 
-router.get("/", async (req, res) => {
-  const { limit, page, sort, query } = req.query;
-  let queryList = { limit, page, sort, query };
+// obtener todos los products
 
-  try {
-    const products = await productManger.getProduct(queryList);
-    res.send({ status: "success", products });
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
+
+products.get("/", async (req, res) => {
+	try {
+		const result = await productModel.find();
+		return res.status(200).json({ status: "success", payload: result });
+	} catch (err) {
+		return res.status(500).json({ error: err.message });
+	};
 });
 
-router.post("/", async (req, res) => {
-  const newProduct = {
-    ...req.body,
-  };
-  try {
-    const response = await productManger.createProduct(newProduct);
-    res.send(response);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
+// Endpoint para obtener un producto según ID:
+products.get("/:id", async (req, res) => {
+	try {
+		const { id } = req.params;
+		const result = await productModel.findById(id);
+
+		if (!result) {
+			return res.status(200).send(`There's no product with ID ${id}`);
+		};
+
+		return res.status(200).json({ status: "success", payload: result });
+	} catch (err) {
+		return res.status(500).json({ error: err.message });
+	};
 });
 
-router.put("/:id", async (req, res) => {
-  const { id } = req.params;
-  const product = req.body;
-  try {
-    const response = await productManger.updateProduct(id, product);
-    res.send(response);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
+// agregar producto a producto
+products.post("/", async (req, res) => {
+	try {
+		const { title, description, code, price, stock, category } = req.body;
+
+		if (
+			!title ||
+			!description ||
+			!code ||
+			!price ||
+			!stock ||
+			!category ||
+			!price
+		) {
+			return res.status(200).send(`Please complete all the fields to create a product`);
+		};
+
+		const result = await productModel.create({
+			title,
+			description,
+			code: code.replace(/\s/g, "").toLowerCase(),
+			price,
+			stock,
+			category: category.toLowerCase(),
+		});
+
+		return res.status(200).json({ status: "success", payload: result });
+	} catch (err) {
+		return res.status(500).json({ error: err.message });
+	};
 });
 
-router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const response = await productManger.deleteProduct(id);
-    res.send({
-      message: "Producto eliminado correctamente",
-      id: id,
-    });
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
+// actualizar segun id
+
+products.put("/:id", async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { title, description, code, price, stock, category } = req.body;
+		const product = await productModel.findById(id);
+
+		if (!product) {
+			return res.status(200).send(`There's no product with ID ${id}`);
+		};
+
+		if (
+			!title ||
+			!description ||
+			!code ||
+			!price ||
+			!stock ||
+			!category ||
+			!price
+		) {
+			return res.status(200).send(`Please complete all the fields to update a product`);
+		};
+		
+		const newproduct = {
+			title,
+			description,
+			code: code.replace(/\s/g, "").toLowerCase(),
+			price,
+			stock,
+			category: category.toLowerCase(),
+		};
+		await productModel.updateOne({ _id: id }, newproduct);
+
+		const result = await productModel.findById(id);
+		return res.status(200).json({ status: "success", payload: result });
+	} catch (err) {
+		return res.status(500).json({ error: err.message });
+	};
 });
 
-export default router;
+//  borrar un producto segun id
+products.delete("/:id", async (req, res) => {
+	try {
+		const { id } = req.params;
+		await productModel.deleteOne({ _id: id });
+
+		const result = await productModel.find();
+		return res.status(200).json({ status: "success", payload: result });
+	} catch (err) {
+		return res.status(500).json({ error: err.message });
+	};
+});
+
+export default products;
