@@ -4,6 +4,7 @@ import { cartModel } from "../models/cart.model.js";
 class ProductManger {
   async getProduct(queryList) {
     const { query, sort } = queryList;
+
     try {
       if (queryList) {
         const productsParams = await productModel.paginate(
