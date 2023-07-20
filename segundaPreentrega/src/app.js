@@ -17,8 +17,11 @@ import __dirname from "./utils.js";
 
 
 // Mongo env y url
-
+import MongoStore from "connect-mongo";
+import session from "express-session";
 import mongoose from "mongoose";
+import { messageModel } from "./dao/mongo/models/chat.model.js";
+import { productModel } from "./dao/mongo/models/product.model.js";
 const mongoURL = "mongodb+srv://tomaspf33:<coder>@cluster0.hwqwlmp.mongodb.net/?retryWrites=true&w=majority";
 const enviroment = async () => {await mongoose.connect(mongoUrl)};
 enviroment();
