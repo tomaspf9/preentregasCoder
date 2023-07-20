@@ -70,7 +70,7 @@ io.on("connection", async socket => {
 	productModel.watch().on("change", async change => {
 		const products = await productModel.find().lean();
 		io.emit("products", products);
-
+	});
 	socket.on("user", async data => {
 		await messageModel.create({
 			user: data.user,
@@ -95,5 +95,4 @@ io.on("connection", async socket => {
 	socket.on("disconnect", () => {
 		console.log(`Client ${socket.id} disconnected`);
 	});
-})})
-
+})
