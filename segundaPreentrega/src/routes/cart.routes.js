@@ -40,7 +40,7 @@ router.delete("/:cid/products/:pid", async (req, res) => {
   try {
     const response = await cartManager.removeProductFromCart(cid, pid);
     res.send({
-      message: "Product deleted successfully",
+      message: "Producto Eliminado",
       id: pid,
     });
   } catch (err) {
