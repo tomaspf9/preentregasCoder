@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ManagerMongoDb from "../dao/ManagerMongoDb.js";
+import ManagerMongoDb from "../dao/mongo/ManagerMongoDb.js";
 
 const router = Router();
 const cartManager = new ManagerMongoDb.CartManager();
