@@ -1,25 +1,31 @@
 import { Router } from "express";
-import { chatModel } from "../models/chat.model.js";
+import { messageModel } from "../dao/mongo/models/chat.model.js";
 
-const router = Router();
+const messages = Router();
 
-router.get("/", async (req, res) => {
-  res.render("chat", {});
+// visualizar todos los mensajes
+
+messages.get("/", async (req, res) => {
+	try {
+		const result = await messageModel.find();
+		return res.status(200).json({ status: "success", payload: result });
+	} catch (err) {
+		return res.status(500).json({ error: err.message });
+	};
 });
 
-router.get("/messages", async (req, res) => {
-  try {
-    const messages = await chatModel.find();
-    res.send(messages);
-  } catch (err) {
-    req.statusCode(500).send(err.message);
-  }
+// borrar mensaje segun id
+
+messages.delete("/:id", async (req, res) => {
+	try {
+		const { id } = req.params;
+		await messageModel.deleteOne({ _id: id });
+
+		const result = await messageModel.find();
+		return res.status(200).json({ status: "success", payload: result });
+	} catch (err) {
+		return res.status(500).json({ error: err.message });
+	};
 });
 
-router.post("/", async (req, res) => {
-  const message = req.body;
-  const response = await chatModel.create(message);
-  res.send(response);
-});
-
-export default router;
+export default messages;
