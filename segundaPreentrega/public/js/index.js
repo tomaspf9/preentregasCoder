@@ -1,3 +1,79 @@
+//Registro
+const elementExists = (id) => document.getElementById(id) !== null;
+
+elementExists("signup") &&
+  document.getElementById("signup").addEventListener("click", function () {
+    const firstName = document.getElementById("firstName").value;
+    const lastName = document.getElementById("lastName").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const age = document.getElementById("age").value;
+
+    const data = { firstName, lastName, email, password, age };
+    console.log(data);
+
+    fetch("/api/registro", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }).then((data) => {
+      const result = data.json();
+      console.log(result);
+      if (data.status === 200) {
+        window.location.href = "/api/login";
+      } else {
+        alert("El email ya existe");
+      }
+    });
+  });
+
+//Login
+const handleLogin = async (email, password) => {
+  try {
+    const response = await fetch(
+      `login/user/?email=${email}&password=${password}`
+    );
+    const data = await response.json();
+    return data.message;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+elementExists("send") &&
+  document.getElementById("send").addEventListener("click", function () {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    handleLogin(email, password).then((data) => {
+      if (data === "success") {
+        window.location.href = "/api/login/products";
+      } else {
+        alert("Usuario o contraseña incorrecta");
+      }
+    });
+  });
+
+elementExists("logout") &&
+  document
+    .getElementById("logout")
+    .addEventListener("click", async function () {
+      try {
+        const response = await fetch("/api/login/logout");
+        const data = await response.json();
+        console.log(data);
+        if (data.message === "LogoutOK") {
+          window.location.href = "/api/home";
+        } else {
+          alert("logout failed");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+//Productos
 let containerCards = document.getElementById("containerCards");
 let containerCart = document.getElementById("containerCart");
 let btnAnterior = document.getElementById("btnAnterior");
@@ -10,9 +86,7 @@ let limite;
 
 const paginaProductos = () => {
   const getProduct = async (limit = 2, page = 1) => {
-    const product = await fetch(
-      `http://localhost:8080/api/products/?limit=${limit}&page=${page}`
-    );
+    const product = await fetch(`/api/products/?limit=${limit}&page=${page}`);
     const result = await product.json();
     return result;
   };
@@ -36,7 +110,6 @@ const paginaProductos = () => {
 
     render(products);
   };
-
   renderProducts();
 
   const render = (products) => {
@@ -52,7 +125,7 @@ const paginaProductos = () => {
         <p class="card-text">CATEGORIA: ${prod.category}</p>
         <p class="card-text">Codigo: ${prod.code}</p>
         </div>
-        <button class="btn btn-success" id=${prod._id}>Agregar al Carrito</button>
+        <button class="btn btn-primary mx-auto mb-1" id=${prod._id}>Agregar al Carrito</button>
         </div>`;
       containerCards.appendChild(item);
       const btnAgregar = document.getElementById(prod._id);
@@ -92,9 +165,13 @@ const paginaProductos = () => {
   btnSiguiente.addEventListener("click", siguiente);
   btnAnterior.addEventListener("click", anterior);
 };
-if (window.location.href == "http://localhost:8080/api/viewProducts") {
-  paginaProductos();
-}
+elementExists("pag") && paginaProductos();
+// if (window.location.href == 'http://localhost:8080/api/home/products'){
+//     console.log('holaaaaa')
+//     paginaProductos()
+// }
+
+//Carrito
 const getCart = async () => {
   const cart = await fetch("http://localhost:8080/api/carts");
   const data = cart.json();
@@ -106,12 +183,9 @@ const addCart = async (pid) => {
   const cartId = carrito[0]._id;
 
   try {
-    const addCartProduct = await fetch(
-      `http://localhost:8080/api/carts/${cartId}/products/${pid}`,
-      {
-        method: "PUT",
-      }
-    );
+    const addCartProduct = await fetch(`/api/carts/${cartId}/products/${pid}`, {
+      method: "PUT",
+    });
     alert("Producto agregado al carrito");
   } catch (err) {
     console.log(err);
@@ -136,55 +210,4 @@ const renderCart = async () => {
     .join(" ");
   containerCart.innerHTML = list;
 };
-if (window.location.href == "http://localhost:8080/api/viewProducts/cart") {
-  renderCart();
-}
-
-// Chat
-
-const socket = io();
-
-let message = document.getElementById("message");
-let user = document.getElementById("userName");
-let btn = document.getElementById("send");
-let output = document.getElementById("output");
-let actions = document.getElementById("actions");
-
-const getMessage = async () => {
-  const response = await fetch("http://localhost:8080/chat/messages");
-  const data = await response.json();
-  const message = data.map(
-    (msj) =>
-      (output.innerHTML += `<p>
-        <strong>${msj.user}</strong>: ${msj.message} 
-     </p>`)
-  );
-};
-getMessage();
-
-btn.addEventListener("click", () => {
-  socket.emit("mensaje", {
-    message: message.value,
-    user: user.value,
-  });
-  message.value = "";
-});
-
-message.addEventListener("keypress", () => {
-  socket.emit("escribiendo", user.value);
-});
-
-socket.on("mensajeServidor", (data) => {
-  actions.innerHTML = "";
-  output.innerHTML += `<p>
-       <strong>${data.user}</strong>: ${data.message} 
-    </p>`;
-});
-
-socket.on("escribiendo", (data) => {
-  actions.innerHTML = `<p><em>${data} esta escribiendo...</em></p>`;
-});
-
-socket.on("escribiendo", (data) => {
-  actions.innerHTML = `<p><em>${data} esta escribiendo...</em></p>`;
-});
+elementExists("containerCart") && renderCart();
