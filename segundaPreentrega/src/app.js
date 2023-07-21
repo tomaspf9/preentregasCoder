@@ -11,7 +11,7 @@ import productRouter from "./routes/product.routes.js"
 import chatRouter from "./routes/chat.routes.js"
 import cartRouter from "./routes/cart.routes.js"
 import viewsRouter from "./routes/views.routes.js"
-import cookiesRouter from "./routes/cookies.routes.js"
+import cookiesRouter from "./routes/cookies.router.js"
 import sessionsRouter from "./routes/sessions.router.js"
 
 //Utils
@@ -25,7 +25,7 @@ import mongoose from "mongoose";
 import { messageModel } from "./dao/mongo/models/chat.model.js";
 import { productModel } from "./dao/mongo/models/product.model.js";
 const mongoURL = "mongodb+srv://tomaspf33:<coder>@cluster0.hwqwlmp.mongodb.net/?retryWrites=true&w=majority";
-const enviroment = async () => {await mongoose.connect(mongoUrl)};
+const enviroment = async () => {await mongoose.connect(mongoURL)};
 enviroment();
 
 //Handlebars y middlewares
@@ -48,7 +48,7 @@ app.use("/chat", chatRouter);
 mongoose.set("strictQuery", false);
 mongoose.connect(mongoURL, (err) => {
   if (err) {
-    console.log("Fallo de conexión DB", err.message);
+    console.log("Fallo la conexión a la DB", err.message);
     process.exit();
   } else {
     console.log("Conectado a la BD");
