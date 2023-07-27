@@ -34,7 +34,9 @@ app.use(session({
 	saveUninitialized: true,
 }))
 
-// Passport
+// Strats passport y github
+import GitHubStrategy from "passport-github2";
+import local from "passport-local";
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 initializePassport();
