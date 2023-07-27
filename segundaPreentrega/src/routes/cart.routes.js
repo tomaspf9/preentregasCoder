@@ -4,7 +4,7 @@ import { productModel } from "../dao/mongo/models/product.model.js";
 
 const carts = Router();
 
-// Endpoint para obtener todos los carritos:
+// Obtener todos los carritos:
 carts.get("/", async (req, res) => {
 	try {
 		let result = await cartModel.find();
@@ -14,7 +14,7 @@ carts.get("/", async (req, res) => {
 	};
 });
 
-// Endpoint para obtener un carrito según ID:
+// Obtener un carrito según ID:
 carts.get("/:id", async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -30,7 +30,7 @@ carts.get("/:id", async (req, res) => {
 	};
 });
 
-// Endpoint para agregar un carrito:
+// Agregar un carrito:
 carts.post("/", async (req, res) => {
 	try {
 		const result = await cartModel.create({
@@ -43,7 +43,7 @@ carts.post("/", async (req, res) => {
 	};
 });
 
-// Endpoint para agregar un producto a un carrito segun IDs:
+// Agregar un producto a un carrito segun IDs:
 carts.get("/:cid/product/:pid", async (req, res) => {
 	try {
 		const { cid, pid } = req.params;
@@ -78,7 +78,7 @@ carts.get("/:cid/product/:pid", async (req, res) => {
 	};
 });
 
-// Endpoint para actualizar un carrito según ID con un arreglo de productos:
+// Actualizar un carrito según ID con un arreglo de productos:
 carts.put("/:cid", async (req, res) => {
 	try {
 		const { cid } = req.params;

@@ -27,8 +27,22 @@ import { productModel } from "./dao/mongo/models/product.model.js";
 const mongoURL = "mongodb+srv://tomaspf33:<coder>@cluster0.hwqwlmp.mongodb.net/?retryWrites=true&w=majority";
 const enviroment = async () => {await mongoose.connect(mongoURL)};
 enviroment();
+app.use(session({
+	store: MongoStore.create({mongoURL}),
+	secret: "<TOKEN>",
+	resave: false,
+	saveUninitialized: true,
+}))
 
-//Handlebars y middlewares
+// Passport
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+//  Handlebars y middlewares
 
 import handlebars from "express-handlebars";
 app.engine("handlebars", handlebars.engine());
@@ -40,6 +54,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
+app.use("/api/cookies",cookiesRouter);
+app.use("/api/sessions",sessionsRouter);
 app.use("/", viewsRouter);
 app.use("/chat", chatRouter);
 
